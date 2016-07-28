@@ -1,0 +1,17 @@
+---
+
+# These are the volumes used by Logstash to store its data
+# TODO These will end up being ECS thingies
+# ES Volume
+
+- name: Create grafana data volume
+  include: roles/ansible_docker_utils/tasks/create_volume.yml
+  vars:
+    docker_name: "{{ volumes.grafana_data.name }}"
+  register: result
+
+- name: Create grafana logs volume
+  include: roles/ansible_docker_utils/tasks/create_volume.yml
+  vars:
+    docker_name: "{{ volumes.grafana_logs.name }}"
+  register: result

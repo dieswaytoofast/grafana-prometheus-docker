@@ -1,0 +1,13 @@
+---
+
+# These are the volumes used by Databases to store their data
+# TODO These will end up being ECS thingies
+# DB Volume
+
+- name: Create DB data volume
+  include: roles/ansible_docker_utils/tasks/create_volume.yml
+  vars:
+    docker_name: "{{ volumes.grafana_db.name }}"
+  register: result
+
+#- debug: var=result.stdout_lines

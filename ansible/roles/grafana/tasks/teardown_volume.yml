@@ -1,0 +1,16 @@
+---
+
+# Remove the volume
+- include: roles/ansible_docker_utils/tasks/remove_volume.yml
+  vars:
+    docker_name: "{{ volumes.grafana_data.name }}"
+  register: result
+
+- debug: var=result.stdout_lines
+
+- include: roles/ansible_docker_utils/tasks/remove_volume.yml
+  vars:
+    docker_name: "{{ volumes.grafana_logs.name }}"
+  register: result
+
+- debug: var=result.stdout_lines

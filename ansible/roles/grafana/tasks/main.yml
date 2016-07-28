@@ -1,0 +1,41 @@
+---
+
+- name: Teardown grafana volumes if necessary
+  include: teardown_volume.yml
+  when: teardown_grafana_volumes is defined
+  tags:
+    - teardown_volumes
+    - teardown_grafana_volumes
+
+- name: Teardown the grafana containers if necessary
+  include: teardown_containers.yml
+  when: teardown_grafana_containers is defined
+  tags:
+    - teardown_containers
+    - teardown_grafana_containers
+
+- name: Build the grafana volumes
+  include: build_volumes.yml
+  when: build_volumes is defined
+  tags:
+    - grafana
+    - build
+    - build_volumes
+    - build_grafanavolumes
+
+
+- name: Build the grafana containers
+  include: build_containers.yml
+  when: build_containers is defined
+  tags:
+    - grafana
+    - build
+    - build_grafana
+
+- name: Run the grafana containers
+  include: run_containers.yml
+  when: run_containers is defined
+  tags:
+    - grafana
+    - run
+    - run_grafana

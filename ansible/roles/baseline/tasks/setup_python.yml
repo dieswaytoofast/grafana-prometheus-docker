@@ -1,0 +1,20 @@
+---
+
+- name: Install python2 stuff
+  pip:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - boto
+    - docker-py
+    - awscli
+
+- name: Install python3 stuff
+  pip:
+    name: "{{ item }}"
+    executable: /usr/bin/pip3
+    state: present
+  with_items:
+    - pathlib
+    - pyyaml
+    - sarge

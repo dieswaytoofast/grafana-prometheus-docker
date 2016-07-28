@@ -1,0 +1,22 @@
+#!/usr/bin/env /usr/bin/ansible-playbook
+---
+
+
+##
+##   Spin up the AWS environment, pull containers from ECR, and launch them
+##
+
+- name: Get the secrets from AWS S3 (to configure git, build containers, etc.)
+  include: aws_get_secrets.yml
+
+- name: Build the containers, and push them to ECR (if necessary)
+  include: aws_grafana_push_to_ecr.yml
+
+- name: Get info about, and launch other, AWS instances
+  include: aws_get_info.yml
+
+- name: Setup the brand new 'new' instances
+  include: aws_setup_weave.yml
+
+- name: Setup the existing 'grafana' instances
+  include: aws_setup_grafana.yml

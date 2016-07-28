@@ -1,0 +1,11 @@
+---
+
+# Stop Grafana
+- name: Stop grafana
+  include: roles/grafana/tasks/teardown_containers.yml
+
+- name: Stop databases
+  include: roles/databases/tasks/teardown_containers.yml
+
+- name: Stop grafana_prometheus
+  include: roles/grafana_prometheus/tasks/teardown_containers.yml

@@ -1,0 +1,17 @@
+---
+
+- name: Populate and copy the grafana config
+  template:
+    src: grafana.ini.j2
+    dest: "{{ grafana.base_dir }}/grafana/grafana.ini"
+
+- name: Build the grafana container
+  include: roles/ansible_docker_utils/tasks/build_container.yml
+  vars:
+    docker_name: "{{ containers.grafana.name }}"
+    docker_dockerfile: "{{ grafana.dockerfiles_path }}/{{ containers.grafana.dockerfile }}"
+    docker_build_args: "{{ grafana.build_args }}"
+    docker_base_dir: "{{ grafana.base_dir }}"
+
+#- debug: var=docker_result.stdout_lines
+

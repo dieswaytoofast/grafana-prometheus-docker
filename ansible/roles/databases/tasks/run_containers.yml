@@ -1,0 +1,42 @@
+---
+
+# Check if the container is running.  If it is, dont' run it
+- name: Check if {{ containers.grafana_db.name }} is running
+  include: roles/ansible_docker_utils/tasks/is_container_running.yml
+  vars:
+    docker_name: "{{ containers.grafana_db.name }}"
+
+# Pull the image from ECR
+- name: Pull {{ containers.grafana_db.name }} from ECR
+  include: roles/ansible_aws/tasks/ansible_aws_pull_from_ecr.yml
+  vars:
+    ansible_aws_image_name: "{{ containers.grafana_db.name }}"
+    ansible_aws_image_tag: "{{ containers.grafana_db.version }}"
+  when: ansible_aws_pull_from_ecr is defined
+
+
+# Run the container if it isn't running
+- name: Launch the container {{ containers.grafana_db.name }}
+  include: roles/ansible_docker_utils/tasks/run_container.yml
+  vars:
+    docker_name: "{{ containers.grafana_db.name }}"
+    docker_domain_name: "{{ weave.domain_name }}"
+    docker_volume_args: "{{ containers.grafana_db.volume_args }}"
+    docker_extra_args: "-d
+                        --restart=always
+                        {{ common_logging_params }}
+                        {{ weave_docker_args }}
+                        {{ grafana.run_args }}"
+  register: result
+  when: "not {{docker_container_is_running }}"
+
+- debug: var=result.stdout_lines
+
+
+# Check if postgres is up
+- name: Check if {{ containers.grafana_db.name }} is up
+  include: roles/ansible_docker_utils/tasks/is_postgres_up.yml
+  vars:
+    docker_name: "{{ containers.grafana_db.name }}"
+    docker_retries: "{{ containers.grafana_db.retry_count }}"
+    docker_delay: "{{ containers.grafana_db.retry_wait }}"

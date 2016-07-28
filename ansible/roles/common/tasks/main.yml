@@ -1,0 +1,4 @@
+---
+
+- name: Get the log drivers for the docker containers
+  include: common_logging_args.yml

@@ -1,0 +1,25 @@
+#!/usr/bin/env /usr/bin/ansible-playbook
+---
+
+- hosts: grafana
+  become: yes
+  become_method: sudo
+  vars_files:
+    - "{{ grafana_config_file }}"
+  vars:
+    ansible_aws_login_to_ecr: yes
+    ansible_aws_pull_from_ecr: yes
+    run_containers: yes
+  roles:
+    - baseline
+    - common
+    - ansible_docker_utils
+    - ansible_weave
+    - role: ansible_aws
+      ansible_aws_load_config: true
+      ansible_aws_config_file: "{{ playbook_dir }}/{{ grafana_aws_params_file }}"
+
+    # Per instance items
+    - databases
+    - prometheus
+    - grafana

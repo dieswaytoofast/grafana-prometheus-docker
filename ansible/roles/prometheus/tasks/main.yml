@@ -1,0 +1,41 @@
+---
+
+- name: Teardown grafana_prometheus volumes if necessary
+  include: teardown_volume.yml
+  when: teardown_grafana_prometheus_volumes is defined
+  tags:
+    - teardown_volumes
+    - teardown_grafana_prometheus_volumes
+
+- name: Teardown the grafana_prometheus containers if necessary
+  include: teardown_containers.yml
+  when: teardown_grafana_prometheus_containers is defined
+  tags:
+    - teardown_containers
+    - teardown_grafana_prometheus_containers
+
+- name: Build the grafana_prometheus volumes
+  include: build_volumes.yml
+  when: build_volumes is defined
+  tags:
+    - grafana_prometheus
+    - build
+    - build_volumes
+    - build_grafana_prometheus_volumes
+
+
+- name: Build the grafana_prometheus containers
+  include: build_containers.yml
+  when: build_containers is defined
+  tags:
+    - grafana_prometheus
+    - build
+    - build_grafana_prometheus
+
+- name: Run the grafana_prometheus containers
+  include: run_containers.yml
+  when: run_containers is defined
+  tags:
+    - grafana_prometheus
+    - run
+    - run_grafana_prometheus

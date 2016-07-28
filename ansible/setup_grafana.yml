@@ -1,0 +1,16 @@
+#!/usr/bin/env /usr/bin/ansible-playbook
+---
+
+- hosts: localhost
+  become: yes
+  become_method: sudo
+  vars_files:
+    - "{{ grafana_config_file }}"
+  roles:
+    #- baseline
+    - common
+    - ansible_docker_utils
+    - ansible_weave
+    - databases
+    - prometheus
+    - grafana

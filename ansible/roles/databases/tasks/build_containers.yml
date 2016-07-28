@@ -1,0 +1,12 @@
+---
+
+# Postgres
+
+- include: roles/ansible_docker_utils/tasks/build_container.yml
+  vars:
+    docker_name: "{{ containers.grafana_db.name }}"
+    docker_dockerfile: "{{ grafana.dockerfiles_path }}/{{ containers.grafana_db.dockerfile }}"
+    docker_build_args: "{{ grafana.build_args }}"
+    docker_base_dir: "{{ grafana.base_dir }}"
+
+#- debug: var=docker_result.stdout_lines

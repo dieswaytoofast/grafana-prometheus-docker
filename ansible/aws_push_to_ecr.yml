@@ -1,0 +1,31 @@
+#!/usr/bin/env /usr/bin/ansible-playbook
+---
+
+- hosts: localhost
+  vars_files:
+    - "{{ grafana_config_file }}"
+  roles:
+    - common
+    - role: ansible_aws
+      ansible_aws_load_config: true
+      ansible_aws_config_file: "{{ playbook_dir }}/{{ grafana_aws_params_file }}"
+      ansible_aws_login_to_ecr: yes
+    - role: ansible_aws
+      ansible_aws_load_config: true
+      ansible_aws_config_file: "{{ playbook_dir }}/{{ grafana_aws_params_file }}"
+      ansible_aws_push_to_ecr: yes
+      ansible_aws_image_name: "{{ containers.grana.name }}"
+      ansible_aws_image_tag: "{{ containers.grafana.version }}"
+    - role: ansible_aws
+      ansible_aws_load_config: true
+      ansible_aws_config_file: "{{ playbook_dir }}/{{ grafana_aws_params_file }}"
+      ansible_aws_push_to_ecr: yes
+      ansible_aws_image_name: "{{ containers.grafana_db.name }}"
+      ansible_aws_image_tag: "{{ containers.grafana_db.version }}"
+    - role: ansible_aws
+      ansible_aws_load_config: true
+      ansible_aws_config_file: "{{ playbook_dir }}/{{ grafana_aws_params_file }}"
+      ansible_aws_push_to_ecr: yes
+      ansible_aws_image_name: "{{ containers.grafana_prometheus.name }}"
+      ansible_aws_image_tag: "{{ containers.grafana_prometheus.version }}"
+

@@ -1,0 +1,23 @@
+#!/usr/bin/env /usr/bin/ansible-playbook
+---
+
+# Get info about, and launch other, AWS instances
+- hosts: localhost
+  become: yes
+  become_method: sudo
+  vars_files:
+    - "{{ grafana_config_file }}"
+  vars:
+    ansible_aws_get_info: yes
+  roles:
+    - baseline
+    - common
+    - ansible_docker_utils
+    - ansible_weave
+    # Launch service servers
+    - role: ansible_aws
+      ansible_aws_load_config: true
+      ansible_aws_config_file: "{{ playbook_dir }}/{{ grafana_aws_params_file }}"
+      ansible_aws_server_type: grafana
+      ansible_aws_instance_count: "{{ ansible_aws_servers.grafana.count }}"
+      ansible_aws_instance_type: "{{ ansible_aws_servers.grafana.instance_type }}"

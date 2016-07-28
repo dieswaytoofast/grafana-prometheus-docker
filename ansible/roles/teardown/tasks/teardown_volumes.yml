@@ -1,0 +1,11 @@
+---
+
+# Remove the volume
+- name: Teardown grafana_prometheus volume
+  include: roles/grafana_prometheus/tasks/teardown_volume.yml
+
+- name: Teardown database volume
+  include: roles/databases/tasks/teardown_volume.yml
+
+- name: Teardown grafana volume
+  include: roles/grafana/tasks/teardown_volume.yml

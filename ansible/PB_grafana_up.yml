@@ -1,0 +1,12 @@
+#!/usr/bin/env /usr/bin/ansible-playbook
+---
+
+##
+##  builds the volumes, containers, and then runs them
+##
+
+- include: setup_grafana.yml
+  vars:
+    build_containers: true
+    build_volumes: true
+    run_containers: true

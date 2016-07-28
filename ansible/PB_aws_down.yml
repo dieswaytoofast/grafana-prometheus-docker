@@ -1,0 +1,8 @@
+#!/usr/bin/env /usr/bin/ansible-playbook
+---
+
+- name: Get info about the grafana servers
+  include: aws_get_info.yml
+
+- name: Teardown the grafana servers
+  include: aws_teardown_grafana.yml

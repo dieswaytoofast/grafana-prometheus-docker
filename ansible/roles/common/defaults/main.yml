@@ -1,0 +1,73 @@
+---
+base_username: cieloops     # This should be `cieloops` by default, 'vagrant' for osx, and whatever elsewhere
+base_groupname: "{{ base_username }}"    # You can override this on the command line,
+
+logstash_host: elk-logstash # This presupposed you are using our ELK. If not, put in the correct name here (or '')
+logstash_port: 12201 # This presupposed you are using our ELK. If not, put in the correct name here
+
+grafana:
+  base_dir: sys
+  dockerfiles_path: "sys/dockerfiles"
+  build_args: --build-arg GRAFANA_DB_HOST={{ containers.grafana_db.name }}
+              --build-arg GRAFANA_DB_PORT={{ containers.grafana_db.port }}
+              --build-arg GRAFANA_PORT={{ containers.grafana.port }}
+              --build-arg GRAFANA_NGINX_PORT_HTTP={{ ansible_nginx_port_http }}
+              --build-arg GRAFANA_NGINX_PORT_HTTPS={{ ansible_nginx_port_https }}
+              --build-arg GRAFANA_PROMETHEUS_PORT={{ containers.grafana_prometheus.port }}
+  run_args: --env-file {{ playbook_dir }}/sys/secrets/grafana_secrets.txt
+
+weave:
+  domain_name: weave.local
+  group_name: mie
+  launch_wait: 3
+
+containers:
+  grafana:
+    name: grafana-app
+    dockerfile: grafana.dockerfile
+    port: 3000
+    volume_args: "-v {{ volumes.grafana_data.name }}:{{ volumes.grafana_data.data_dir }}
+                  -v {{ volumes.grafana_logs.name }}:{{ volumes.grafana_logs.data_dir }}"
+    version: 3.1.0
+  grafana_db:
+    name: grafana-db
+    dockerfile: grafana_db.dockerfile
+    port: 5432
+    volume_args: "-v {{ volumes.grafana_db.name }}:{{ volumes.grafana_db.data_dir }}"
+    retry_wait: 5
+    retry_count: 6
+    version: 9.5.3
+  grafana_nginx:
+    name: grafana-nginx
+    dockerfile: grafana_nginx.dockerfile
+    volume_args: ""
+    retry_wait: 5
+    retry_count: 6
+    version: 1.11.1
+  grafana_prometheus:
+    name: grafana-prometheus
+    dockerfile: grafana_prometheus.dockerfile
+    port: 9090
+    volume_args: "-v {{ volumes.grafana_prometheus_data.name }}:{{ volumes.grafana_prometheus_data.data_dir }}"
+    retry_wait: 5
+    retry_count: 6
+    version: 1.0.1
+
+volumes:
+  grafana_db:
+    name: grafana_db_data
+    data_dir: /var/lib/postgresql/data
+  grafana_data:
+    name: grafana_data
+    data_dir: /var/lib/grafana
+  grafana_logs:
+    name: grafana_logs
+    data_dir: /var/log/grafana
+  grafana_prometheus_data:
+    name: grafana_prometheus_data
+    data_dir: /prometheus
+
+paths:
+  docker: /usr/bin/docker
+  git: /usr/bin/git
+  weave: /usr/local/bin/weave

@@ -1,0 +1,13 @@
+#!/usr/bin/env /usr/bin/ansible-playbook
+---
+
+- hosts: grafana
+  become: yes
+  become_method: sudo
+  vars_files:
+    - "{{ grafana_config_file }}"
+  roles:
+    - common
+    - ansible_docker_utils
+    - ansible_weave
+    - teardown

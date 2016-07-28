@@ -1,0 +1,21 @@
+---
+
+- name: Get the IP address of {{ logstash_host }}
+  include: roles/ansible_weave/tasks/weave_get_container_ip_address.yml
+  vars:
+    weave_name: "{{ logstash_host }}"
+  when: logstash_host != ""
+
+- debug: var=weave_result
+
+- name: Set the logging params for GELF to be the default logs
+  set_fact:
+    common_logging_params: ""
+  when: logstash_host == ""
+
+- name: Set the logging params for GELF when logstash_host is provided
+  set_fact:
+    common_logging_params: --log-driver=gelf
+                           --log-opt gelf-address=udp://{{ weave_result }}:{{ logstash_port }}
+                           --log-opt gelf-tag="mie"
+  when: logstash_host != ""
